@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 70c128e7b46a45f4c8411944963fa2ec
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - fullHeart: {fileID: 21300000, guid: 79e99f5209e6bee4ea5160b423b0bfde, type: 3}
+  - emptyHeart: {fileID: 21300000, guid: 809f4497cb724f7439b3f91d5c239b61, type: 3}
+  - sentences: {instanceID: 0}
+  - gameOverCanvas: {instanceID: 0}
+  - restartButton: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
