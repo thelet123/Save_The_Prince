@@ -5,18 +5,19 @@ using System.Linq;
 using TMPro;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 
 public class Dialog : MonoBehaviour
 {
-    public string[] sentences;
     [SerializeField] TextMeshProUGUI textDisplay;
+    [SerializeField] TextMeshProUGUI skipButton;
     [SerializeField] GameObject DialogCanvas;
     private bool sentence;
     private bool typing;
-    public bool sentenceHasAppeared;
-    public int index;
-    public float typingSpeed;
-
+    private bool sentenceHasAppeared;
+    private int index;
+    private float typingSpeed;
+    private string[] sentences;
     public void Start()
     {
        typing = false;
@@ -24,10 +25,8 @@ public class Dialog : MonoBehaviour
 
     public void Update()
     {
-        if (textDisplay.text == sentences[index] && !sentence) //check that all the sentence has been written
-        {sentenceHasAppeared = true;}
-        if (sentenceHasAppeared) // if so you can continiue to the next one (even if another one is wirrten down)
-        {NextSentence();}
+        if (!sentence && textDisplay.text == sentences[index]) { sentenceHasAppeared = true; } //check that all the sentence has been written
+        if (sentenceHasAppeared) { NextSentence(); } // if so you can continiue to the next one (even if another one is wirrten down)
     }
     
     public void SaySentence(string nowsentences) //gets and write one sentence 
@@ -56,6 +55,7 @@ public class Dialog : MonoBehaviour
         sentence = false;
         index = 0;
         DialogCanvas.SetActive(true);
+        skipButton.gameObject.SetActive(true);
         sentences = nowsentences;
         StartCoroutine(Type()); 
     }    
@@ -90,6 +90,7 @@ public class Dialog : MonoBehaviour
                 textDisplay.text = "";
                 DialogCanvas.SetActive(false);
                 typing = false;
+                skipButton.gameObject.SetActive(false);
             }
         }
         
@@ -101,12 +102,13 @@ public class Dialog : MonoBehaviour
         DialogCanvas.SetActive(false);
         typing = false;
         sentenceHasAppeared = false;
+        skipButton.gameObject.SetActive(false);
     }
 
     public bool IsWriting()
     {
-        if (DialogCanvas.activeInHierarchy)
-        { 
+        if (DialogCanvas.activeInHierarchy && !sentence)
+        {
             Cursor.visible = true; 
             return true;
         }
