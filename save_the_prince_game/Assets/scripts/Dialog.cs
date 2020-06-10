@@ -12,12 +12,12 @@ public class Dialog : MonoBehaviour
     [SerializeField] TextMeshProUGUI textDisplay;
     [SerializeField] TextMeshProUGUI skipButton;
     [SerializeField] GameObject DialogCanvas;
-    private bool sentence;
-    private bool typing;
-    private bool sentenceHasAppeared;
     private int index;
     private float typingSpeed;
     private string[] sentences;
+    private bool sentence;
+    private bool typing;
+    private bool sentenceHasAppeared;
     public void Start()
     {
        typing = false;
@@ -25,8 +25,8 @@ public class Dialog : MonoBehaviour
 
     public void Update()
     {
-        if (!sentence && textDisplay.text == sentences[index]) { sentenceHasAppeared = true; } //check that all the sentence has been written
-        if (sentenceHasAppeared) { NextSentence(); } // if so you can continiue to the next one (even if another one is wirrten down)
+        if (!sentence && textDisplay.text == sentences[index]) { sentenceHasAppeared = true; } //check that all the sentence has been written in canvas
+        if (sentenceHasAppeared) { NextSentence(); } // if so you can continiue to the next one (even if another sentence is wirrten)
     }
     
     public void SaySentence(string nowsentences) //gets and write one sentence 
@@ -42,7 +42,7 @@ public class Dialog : MonoBehaviour
         }
     } 
 
-    public IEnumerator Wait() // if only one sentence has been said it'll diappear in 1 sec 
+    public IEnumerator Wait() // if only one sentence has been written it'll diappear after 1 sec 
     {
         yield return new WaitForSeconds(1);
         DialogCanvas.SetActive(false);
@@ -73,7 +73,7 @@ public class Dialog : MonoBehaviour
         {StartCoroutine(Wait());}
     }
 
-    public void NextSentence() //if you press enter you can continue with the next sentence or finish the dialog 
+    public void NextSentence() //if you press enter you can continue with the next sentence
     {
         
         if (Input.GetKeyDown(KeyCode.Return))
@@ -96,7 +96,7 @@ public class Dialog : MonoBehaviour
         
     }
 
-    public void Skip() //allow player to skip dialogs 
+    public void Skip() //allow player to skip dialogs with a press on the "skip" button
     {
         textDisplay.text = "";
         DialogCanvas.SetActive(false);
@@ -105,16 +105,18 @@ public class Dialog : MonoBehaviour
         skipButton.gameObject.SetActive(false);
     }
 
-    public bool IsWriting()
+    public bool IsWriting() //check if there is a written sentence in the game. if so, the curdor will appear (so you can press skip) and you wont be able to move the camera around
     {
         if (DialogCanvas.activeInHierarchy && !sentence)
         {
-            Cursor.visible = true; 
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
             return true;
         }
         else
         {
             Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             return false;
         }
     }

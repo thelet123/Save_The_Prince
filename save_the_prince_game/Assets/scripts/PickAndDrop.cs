@@ -7,6 +7,7 @@ public class PickAndDrop : MonoBehaviour
     private Dialog dialogScript;
     private List<GameObject> roadObjectList;
     private PlayerController playerControllerScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +22,7 @@ public class PickAndDrop : MonoBehaviour
         MakeRoad();
     }
 
-    private void MakeRoad() // if player press shift he put mushroom that he collected (1 instade 3) if he didnt collected any alert he can do that action 
+    private void MakeRoad() // if player press shift he put markroad that he collected, if he didnt collected any - dialog active - he can't do that action 
     {
         if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift))
         {
@@ -40,10 +41,10 @@ public class PickAndDrop : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other) //do diffrent action when player collide with staff 
+    private void OnTriggerEnter(Collider other)   //pick up the markroad object and put it in a list
     {
 
-        if (other.CompareTag("MarkRoad") && (Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w")) && !playerControllerScript.IsGameOver()) //pick up the markroad object and put it in a list
+        if (other.CompareTag("MarkRoad") && (Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w")) && !playerControllerScript.IsGameOver())
         {
             roadObjectList.Add(other.gameObject);
             other.gameObject.SetActive(false);

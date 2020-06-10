@@ -5,18 +5,19 @@ using UnityEngine.Analytics;
 
 public class enemy : MonoBehaviour
 {
-    private GameObject Player;
-    private Animator enemyAnim;
-    public float enemyspeed = 10;
-    public float MinDistFollow = 40;
-    public float MinDistAttack = 7;
-    private int killpoint;
     private GameManager gameManagerScript;
     private Dialog dialogScript;
+    private PlayerController playerControllerScript;
+    private GameObject Player;
+    private Animator enemyAnim;
+    private int killpoint;
     private int Randomsentence;
+    private float enemyspeed = 10;
+    private float MinDistFollow = 40;
+    private float MinDistAttack = 7;
     private string[] killedEnemySentence = { " good", " ok she's gone", " one down", " keep going!" };
     private bool found;
-    private PlayerController playerControllerScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +36,7 @@ public class enemy : MonoBehaviour
         { FollowAndAttackPlayer();}
     }
 
-    void FollowAndAttackPlayer()
+    void FollowAndAttackPlayer() //the enemy will follow the player and attack him with animation
     {
         float distance = Vector3.Distance(transform.position, Player.transform.position);
         if (distance <= MinDistFollow && distance > MinDistAttack || found)
@@ -60,7 +61,7 @@ public class enemy : MonoBehaviour
         yield return new WaitForSeconds(3);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other) //if the player's sword touched the enemy 5 times he will dissapear and the bloodlevel of the player will increase
     {
         if(other.gameObject.CompareTag("sword") && Input.GetKeyDown(KeyCode.Mouse0))
         {

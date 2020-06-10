@@ -7,19 +7,19 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public Image xpbar;
-    [SerializeField] Sprite fullHeart;
-    [SerializeField] Sprite emptyHeart;
-    [SerializeField] TextMeshProUGUI sentences;
+    private GameObject key;
     [SerializeField] GameObject gameOverCanvas;
     [SerializeField] GameObject gameStartCanvas;
     [SerializeField] GameObject DialogCanvas;
+    [SerializeField] Sprite fullHeart;
+    [SerializeField] Sprite emptyHeart;
     [SerializeField] Image[] hearts;
+    [SerializeField] Image xpbar;
+    [SerializeField] TextMeshProUGUI sentences;
     [SerializeField] string[] sentenceArray;
     private float XPpoint;
-    private GameObject key;
     // Start is called before the first frame update
-    void Start()
+    void Start() //set the level by active and diactive objects in the scene  
     {
         key = GameObject.Find("key");
         key.SetActive(false);
@@ -28,9 +28,10 @@ public class GameManager : MonoBehaviour
         gameStartCanvas.gameObject.SetActive(true);
         gameOverCanvas.gameObject.SetActive(false);
         Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
-    public void UpdateXpAndLevel() //if youve killed an enemy your xp wil increase by 0.1, if youve riched the max youll find the key next player
+    public void UpdateXpAndLevel() // increase bloodlevel by 0.1, if youve riched the max the key will be active (to the next level)
     {
         XPpoint += 0.1f;
         xpbar.fillAmount = XPpoint;
@@ -43,7 +44,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdateHealth(int health)
+    public void UpdateHealth(int health) //gets health number from PlayerController script and active the sprites 
     {
         for (int i = 0; i < hearts.Length; i++)
         {
@@ -57,18 +58,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    public void GameOver() //active game over canvas 
     {
-        //sentences.text = sentenceArray[randsentence];
+        int randsentence = Random.Range(0, sentenceArray.Length);
+        sentences.text = sentenceArray[randsentence];
         gameOverCanvas.gameObject.SetActive(true);
         gameStartCanvas.gameObject.SetActive(false);
         Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
-    public void RestartGame()
+    public void RestartGame() //restart game with a press of a button 
     {SceneManager.LoadScene(SceneManager.GetActiveScene().name);}
 
-    public void QuitGame()
+    public void QuitGame() //quit game with a press of a button
     {
         Application.Quit();
         Debug.Log("has quit game");

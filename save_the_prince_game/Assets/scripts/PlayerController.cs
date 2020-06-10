@@ -6,23 +6,23 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private string[] hurtsentence = {" ouch", " can you be more carful??", " come on hit him", " that one was hurt"};
-    [SerializeField] float boundeSize = 1000;
-    public float movespeed;
-    public int jumpForce = 300;
-    public int health;
-    public int decreaseNumHealth;
-    public float rotationSpeed = 10.0f;
-    private bool isGameOver;
-    private int checkdoublejump;
     private GameManager gameManagerScript;
     private Dialog dialogScript;
     private levelManager levelManagerScript;
     private Rigidbody playerRB;
     private Animator playerAnim;
+    private KidnaperController kidnaperScript;
+    private bool isGameOver;
+    private bool hasNotHappened;
+    private int jumpForce = 300;
+    private int health;
+    private int decreaseNumHealth;
+    private int checkdoublejump;
     private int Randomsentence;
-    private bool hasNotHappened; 
-    void Start()
+    private float movespeed;
+    private readonly string[] hurtsentence = {" ouch", " can you be more carful??", " come on hit him", " that one was hurt"};
+
+    void Start() //set objecs for the start
     {
         hasNotHappened = true;
         health = 5;
@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
         dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         gameManagerScript = GameObject.Find("GameManager").GetComponent<GameManager>();
         levelManagerScript = GameObject.Find("LevelManager").GetComponent<levelManager>();
+        kidnaperScript = GameObject.Find("Kidnapper").GetComponent<KidnaperController>();
         playerRB = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
         playerAnim.SetBool("waiting", true);
@@ -40,11 +41,10 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate() // Update is called once per frame
     { 
         MovePlayer();
-        KeepBounds();
         gameManagerScript.UpdateHealth(health);
     }
 
-    public void MovePlayer() //manage the player movment  
+    public void MovePlayer() //manage the player movment with animation  
     {
         float verticalinput = Input.GetAxis("Vertical"); //to move - forword or backward 
         float horizontalinput = Input.GetAxis("Horizontal"); //to rotate - right of left
@@ -108,42 +108,22 @@ public class PlayerController : MonoBehaviour
             }
         }
     } 
- 
-    void KeepBounds () //keeps the player on terrain bounderys
-    {
-        if (transform.position.z > boundeSize)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, boundeSize);
-        }
-        if (transform.position.z < -boundeSize)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -boundeSize);
-        }
-        if (transform.position.x > boundeSize)
-        {
-            transform.position = new Vector3(boundeSize, transform.position.y, transform.position.z);
-        }
-        if (transform.position.x < -boundeSize)
-        {
-            transform.position = new Vector3(-boundeSize, transform.position.y, transform.position.z);
-        }
-    }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision) //on collishion with ground player can jump again
     {
-        if (collision.gameObject.CompareTag("ground"))  //on collishion with ground player can jump again
+        if (collision.gameObject.CompareTag("ground"))  
         {checkdoublejump = 0;}
     }
 
-    private void OnTriggerEnter(Collider other) //do diffrent action when player collide with staff 
+    private void OnTriggerEnter(Collider other) //do diffrent action when player collide with objects 
     {
-        if (other.gameObject.CompareTag("lives") && !isGameOver) //on collishion with live, live diappear and increase live
+        if (other.gameObject.CompareTag("lives") && !isGameOver)  //on collishion with live, live diappear and increase live bar
         {
             health++;
             Destroy(other.gameObject);
         }
 
-        else if (other.gameObject.CompareTag("enemy") && !isGameOver) //when collide with enemy youll get hurt of the enemy get hurt 
+        else if (other.gameObject.CompareTag("enemy") && !isGameOver) //when collide with enemy youll get hurt and live decreas if theyll reach 0 game over 
         {
               decreaseNumHealth++;
               if (decreaseNumHealth == 5)
@@ -170,13 +150,17 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        else if (other.gameObject.CompareTag("NextLevel") && !isGameOver)//when you touch the nextlevelpoint youll transorm to the next level  //when you touch the nextlevelpoint youll transorm to the next level 
+        else if (other.gameObject.CompareTag("NextLevel") && !isGameOver)//when you touch the nextlevelpoint youll transorm to the next level (if you have the key)
         { levelManagerScript.NextLevel();}
 
-        else if (other.gameObject.CompareTag("kidnapertrig") && !isGameOver && hasNotHappened) 
-        {levelManagerScript.KidnaperScene(); hasNotHappened = false; }
+        else if (other.gameObject.CompareTag("kidnapertrig") && !isGameOver && hasNotHappened) //when you reach a certain point the kidnaper and the kidnaper dialog will be active 
+        {
+            levelManagerScript.KidnaperScene();
+            hasNotHappened = false;
+            kidnaperScript.MoveKidnapper(transform.position);
+        }
     }
 
-    public bool IsGameOver()
+    public bool IsGameOver() //return game over bool 
     { return isGameOver; }
 }
