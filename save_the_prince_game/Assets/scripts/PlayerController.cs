@@ -157,7 +157,6 @@ public class PlayerController : MonoBehaviour
         {
             levelManagerScript.KidnaperScene();
             hasNotHappened = false;
-            kidnaperScript.MoveKidnapper(transform.position);
         }
     }
 
