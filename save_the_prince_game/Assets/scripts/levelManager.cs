@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class levelManager : MonoBehaviour
 {
-    private GameObject MoonSword;
     private Dialog dialogScript;
     [SerializeField] string[] levelSentences;
     [SerializeField] string[] kidnapeSentences;
@@ -17,8 +16,6 @@ public class levelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start() //active and diactive object by level, find the scene name ext, make differt entery dialog in every level (if there is any)
     {
-        MoonSword = GameObject.Find("MoonSword");
-        MoonSword.SetActive(false);
         dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         Scene currentScene = SceneManager.GetActiveScene();
         sceneName = currentScene.name;
@@ -45,10 +42,9 @@ public class levelManager : MonoBehaviour
     public void KidnaperScene() //make differnt dialog kidnaper scene in every level 
     {
         if (sceneName == "Level1")
-        {
-            dialogScript.Talk(kidnapeSentences);
-            MoonSword.SetActive(true);
-        }
+        {dialogScript.Talk(kidnapeSentences);}
     }
+
+   
 
 }

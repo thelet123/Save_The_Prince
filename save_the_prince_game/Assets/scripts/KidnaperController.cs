@@ -4,16 +4,25 @@ using UnityEngine;
 
 public class KidnaperController : MonoBehaviour
 {
+    private GameObject MoonSword;
     private Animator KidnapperAnim;
     private GameObject Player;
-    public float distance;
+    private Dialog dialogScript;
     private Transform walkTo;
+    public float distance;
     public float speed = 10;
     public float MinDistFollow = 25f;
+    public bool met = false;
+    public bool turn = false;
     public void Start()
     {
+        MoonSword = GameObject.Find("MoonSword");
+        MoonSword.SetActive(false);
         Player = GameObject.Find("Player");
+        dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         KidnapperAnim = GetComponent<Animator>();
+        turn = false;
+        met = false;
     }
 
 
@@ -26,19 +35,24 @@ public class KidnaperController : MonoBehaviour
     void MoveKidnapper ()
     {
         float distance = Vector3.Distance(transform.position, Player.transform.position);
-        if (distance <= MinDistFollow && distance >10)
+        if (distance <= MinDistFollow && !met) //when close, move torwords the player
         {
             walkTo = Player.transform;
-            KidnapperAnim.SetBool("walk", true);
+              KidnapperAnim.SetBool("walk", true);
             transform.LookAt(walkTo);
             transform.position += transform.forward * speed * Time.deltaTime;
-           
+            if (distance < 10){met = true;}
         }
-        if (distance < 10)
+        if (met) // when finish the conversation kidnapper disappear 
         {
             KidnapperAnim.SetBool("walk", false);
-            transform.position -= transform.forward * speed * Time.deltaTime;
+            if (!dialogScript.IsWriting())
+            { 
+                gameObject.SetActive(false);
+                MoonSword.SetActive(true);
+            }
         }
+
     }
 
 }

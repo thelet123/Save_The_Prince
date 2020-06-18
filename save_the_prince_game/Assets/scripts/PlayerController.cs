@@ -48,7 +48,7 @@ public class PlayerController : MonoBehaviour
     {
         float verticalinput = Input.GetAxis("Vertical"); //to move - forword or backward 
         float horizontalinput = Input.GetAxis("Horizontal"); //to rotate - right of left
-        if (!isGameOver )  //if the game is not over let the player move
+        if (!isGameOver && !dialogScript.IsWriting())  //if the game is not over let the player move
         {
             //move all the ways with animation, if you press roll youll run 
             transform.Translate(Vector3.forward * verticalinput * movespeed * Time.deltaTime); //move forword or backward 
@@ -107,6 +107,14 @@ public class PlayerController : MonoBehaviour
                 else { playerAnim.SetBool("sword1", false); }
             }
         }
+        if (dialogScript.IsWriting())
+        {
+            foreach (AnimatorControllerParameter parameter in playerAnim.parameters)
+            {playerAnim.SetBool(parameter.name, false);}
+            playerAnim.SetBool("wait", true);
+            
+        }
+        else { playerAnim.SetBool("wait", false); }
     } 
 
     private void OnCollisionEnter(Collision collision) //on collishion with ground player can jump again

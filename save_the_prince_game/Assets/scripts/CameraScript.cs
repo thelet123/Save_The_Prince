@@ -48,6 +48,9 @@ public class CameraScript : MonoBehaviour
                 transform.rotation = Quaternion.Euler(360f + minviewangel, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
             }
         }
+
+        if (dialogScript.IsWriting() && !playerControllerScript.IsGameOver()) //if theres a dialog lock the camera in this position
+        {transform.eulerAngles = new Vector3(0f,Player.transform.rotation.eulerAngles.y, 0.0f);}
         
 
     }

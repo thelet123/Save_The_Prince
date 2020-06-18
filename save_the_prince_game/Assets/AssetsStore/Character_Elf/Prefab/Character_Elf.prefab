@@ -131,7 +131,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4081129071478060}
-  - component: {fileID: 95663668927121952}
   - component: {fileID: 5210563765629611024}
   m_Layer: 0
   m_Name: Character_Elf
@@ -156,25 +155,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &95663668927121952
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1067053214699150}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 8909e7aa923862f4abbfd053c0f0088e, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &5210563765629611024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,6 +167,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35fd6e7beed7d764092a477db335dd4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  distance: 0
+  speed: 10
+  MinDistFollow: 25
+  met: 0
 --- !u!1 &1103208023307964
 GameObject:
   m_ObjectHideFlags: 0
