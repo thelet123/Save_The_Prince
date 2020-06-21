@@ -12,6 +12,8 @@ public class Dialog : MonoBehaviour
     [SerializeField] TextMeshProUGUI textDisplay;
     [SerializeField] TextMeshProUGUI skipButton;
     [SerializeField] GameObject DialogCanvas;
+    private GameObject Player;
+    private PlayerController playerControllerScript;
     private int index;
     private float typingSpeed;
     private string[] sentences;
@@ -20,7 +22,9 @@ public class Dialog : MonoBehaviour
     private bool sentenceHasAppeared;
     public void Start()
     {
-       typing = false;
+        Player = GameObject.Find("Player");
+        playerControllerScript = Player.GetComponent<PlayerController>();
+        typing = false;
     }
 
     public void Update()
@@ -113,12 +117,13 @@ public class Dialog : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             return true;
         }
-        else
+        else if(!playerControllerScript.IsGameOver())
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             return false;
         }
+        return false;
     }
 
 }

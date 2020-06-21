@@ -3,7 +3,18 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - ground
+  - kidnapertrig
+  - sentence
+  - MarkRoad
+  - animal
+  - enemy
+  - key
+  - lives
+  - NextLevel
+  - sword
+  - enemyWeapon
   layers:
   - Default
   - TransparentFX

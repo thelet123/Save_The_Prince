@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     private GameObject key;
+    private Dialog dialogScript;
     [SerializeField] GameObject gameOverCanvas;
     [SerializeField] GameObject gameStartCanvas;
     [SerializeField] GameObject DialogCanvas;
@@ -16,11 +17,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] Image[] hearts;
     [SerializeField] Image xpbar;
     [SerializeField] TextMeshProUGUI sentences;
-    [SerializeField] string[] sentenceArray;
+    [SerializeField] string[] gameOverSentenceArray;
+    [SerializeField] string[] endLevelSentences;
     private float XPpoint;
     // Start is called before the first frame update
     void Start() //set the level by active and diactive objects in the scene  
     {
+        dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         key = GameObject.Find("key");
         key.SetActive(false);
         XPpoint = 0;
@@ -33,14 +36,16 @@ public class GameManager : MonoBehaviour
 
     public void UpdateXpAndLevel() // increase bloodlevel by 0.1, if youve riched the max the key will be active (to the next level)
     {
-        XPpoint += 0.1f;
+        XPpoint += 1f;
         xpbar.fillAmount = XPpoint;
         if (XPpoint == 1)
         {
-            key.transform.position = GameObject.Find("Player").transform.position - new Vector3(4, 3, 0);
-            key.SetActive(true);
-            XPpoint = 0;
-            xpbar.fillAmount = XPpoint;
+            dialogScript.Talk(endLevelSentences);
+            if (!dialogScript.IsWriting())
+            {
+                key.transform.position = GameObject.Find("Player").transform.position - new Vector3(4, 3, 0);
+                key.SetActive(true);
+            }
         }
     }
 
@@ -60,8 +65,11 @@ public class GameManager : MonoBehaviour
 
     public void GameOver() //active game over canvas 
     {
-        int randsentence = Random.Range(0, sentenceArray.Length);
-        sentences.text = sentenceArray[randsentence];
+        if (gameOverSentenceArray != null)
+        {
+            int randsentence = Random.Range(0, gameOverSentenceArray.Length);
+            sentences.text = gameOverSentenceArray[randsentence];
+        }
         gameOverCanvas.gameObject.SetActive(true);
         gameStartCanvas.gameObject.SetActive(false);
         Cursor.visible = true;

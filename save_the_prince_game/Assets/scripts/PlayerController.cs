@@ -12,11 +12,12 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRB;
     private Animator playerAnim;
     private KidnaperController kidnaperScript;
+    private enemy enemtScript;
     private bool isGameOver;
     private bool hasNotHappened;
     private int jumpForce = 300;
-    private int health;
-    private int decreaseNumHealth;
+    public int health;
+    public int decreaseNumHealth;
     private int checkdoublejump;
     private int Randomsentence;
     private float movespeed;
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
         decreaseNumHealth = 0;
         checkdoublejump = 0;
         isGameOver = false;
+        enemtScript = GameObject.FindGameObjectWithTag("enemy").GetComponent<enemy>();
         dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         gameManagerScript = GameObject.Find("GameManager").GetComponent<GameManager>();
         levelManagerScript = GameObject.Find("LevelManager").GetComponent<levelManager>();
@@ -41,6 +43,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate() // Update is called once per frame
     { 
         MovePlayer();
+        LifeReachedZero();
         gameManagerScript.UpdateHealth(health);
     }
 
@@ -131,22 +134,16 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        else if (other.gameObject.CompareTag("enemy") && !isGameOver) //when collide with enemy youll get hurt and live decreas if theyll reach 0 game over 
+        else if (other.gameObject.CompareTag("enemyWeapon") && !isGameOver) //when collide with enemy youll get hurt and live decreas if theyll reach 0 game over 
         {
               decreaseNumHealth++;
-              if (decreaseNumHealth == 5)
+              if (decreaseNumHealth == 10)
               {
+                  enemtScript.Wait();
                   Randomsentence = UnityEngine.Random.Range(0, hurtsentence.Length);
                   dialogScript.SaySentence(hurtsentence[Randomsentence]);
                   health--;
                   decreaseNumHealth = 0;
-                  if (health == 0)
-                  {
-                      gameManagerScript.GameOver();
-                      isGameOver = true;
-                      playerAnim.SetBool("waiting", false);
-                      playerAnim.SetTrigger("die_trig");
-                  }
               }
           
         }
@@ -168,6 +165,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void LifeReachedZero ()
+    {
+        if (health == 0)
+        {
+            Debug.Log("ENTERED");
+            isGameOver = true;
+            playerAnim.SetBool("waiting", false);
+            playerAnim.SetTrigger("die_trig");
+            gameManagerScript.GameOver();
+        }
+    }
     public bool IsGameOver() //return game over bool 
     { return isGameOver; }
 }
