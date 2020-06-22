@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    private Image keyDrawUI;
     private GameManager gameManagerScript;
     private Dialog dialogScript;
     private levelManager levelManagerScript;
@@ -29,6 +31,8 @@ public class PlayerController : MonoBehaviour
         health = 5;
         decreaseNumHealth = 0;
         isGameOver = false;
+        GameObject keyDraw = GameObject.Find("keydraw");
+        if (keyDraw != null) { keyDrawUI = keyDraw.GetComponent<Image>();}
         enemyScript = GameObject.Find("enemy").GetComponent<enemy>();
         dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         gameManagerScript = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -38,6 +42,7 @@ public class PlayerController : MonoBehaviour
         playerRB = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
         playerAnim.SetBool("waiting", true);
+        keyDrawUI.gameObject.SetActive(false);
     }
 
     void FixedUpdate() // Update is called once per frame
@@ -130,7 +135,6 @@ public class PlayerController : MonoBehaviour
 
         else if (other.gameObject.CompareTag("enemyWeapon") && !isGameOver && enemyAnim.GetBool("fight")) //when collide with enemy youll get hurt and live decreas if theyll reach 0 game over 
         {
-            Debug.Log("in");
             decreaseNumHealth++;
             if (decreaseNumHealth == 10)
             {
@@ -141,11 +145,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        else if (other.gameObject.CompareTag("key") && !isGameOver) //when pickup key haskey = true
+        else if (other.gameObject.CompareTag("key") && !isGameOver) //when pickup key haskey = true, key draw is appear
         {
             levelManagerScript.HasKey("yes");
             dialogScript.SaySentence(" great now i can open the gate!");
             Destroy(other.gameObject);
+            keyDrawUI.gameObject.SetActive(true);
         }
 
         else if (other.gameObject.CompareTag("NextLevel") && !isGameOver && !hasNotHappened)//when you touch the nextlevelpoint youll transorm to the next level (if you have the key) if you dont and met the kidnapper youll say a sentence
@@ -162,7 +167,6 @@ public class PlayerController : MonoBehaviour
     {
         if (health == 0)
         {
-            Debug.Log("ENTERED");
             isGameOver = true;
             playerAnim.SetBool("waiting", false);
             playerAnim.SetTrigger("die_trig");
