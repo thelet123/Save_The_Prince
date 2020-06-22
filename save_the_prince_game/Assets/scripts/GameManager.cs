@@ -36,16 +36,14 @@ public class GameManager : MonoBehaviour
 
     public void UpdateXpAndLevel() // increase bloodlevel by 0.1, if youve riched the max the key will be active (to the next level)
     {
-        XPpoint += 1f;
+        XPpoint += 1;
         xpbar.fillAmount = XPpoint;
         if (XPpoint == 1)
         {
+            Debug.Log("set active");
             dialogScript.Talk(endLevelSentences);
-            if (!dialogScript.IsWriting())
-            {
-                key.transform.position = GameObject.Find("Player").transform.position - new Vector3(4, 3, 0);
-                key.SetActive(true);
-            }
+            key.transform.position = GameObject.Find("Player").transform.position - new Vector3(4, -5, 0);
+            key.SetActive(true);
         }
     }
 

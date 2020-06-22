@@ -12,36 +12,36 @@ public class PlayerController : MonoBehaviour
     private Rigidbody playerRB;
     private Animator playerAnim;
     private KidnaperController kidnaperScript;
-    private enemy enemtScript;
+    private enemy enemyScript;
+    private Animator enemyAnim;
+    private readonly string[] hurtsentence = { " ouch", " can you be more carful??", " come on hit him", " that one was hurt" };
     private bool isGameOver;
     private bool hasNotHappened;
     private int jumpForce = 300;
     public int health;
     public int decreaseNumHealth;
-    private int checkdoublejump;
     private int Randomsentence;
     private float movespeed;
-    private readonly string[] hurtsentence = {" ouch", " can you be more carful??", " come on hit him", " that one was hurt"};
 
     void Start() //set objecs for the start
     {
         hasNotHappened = true;
         health = 5;
         decreaseNumHealth = 0;
-        checkdoublejump = 0;
         isGameOver = false;
-        enemtScript = GameObject.FindGameObjectWithTag("enemy").GetComponent<enemy>();
+        enemyScript = GameObject.Find("enemy").GetComponent<enemy>();
         dialogScript = GameObject.Find("DialogManager").GetComponent<Dialog>();
         gameManagerScript = GameObject.Find("GameManager").GetComponent<GameManager>();
         levelManagerScript = GameObject.Find("LevelManager").GetComponent<levelManager>();
         kidnaperScript = GameObject.Find("Kidnapper").GetComponent<KidnaperController>();
+        enemyAnim = GameObject.Find("enemy").GetComponent<Animator>();
         playerRB = GetComponent<Rigidbody>();
         playerAnim = GetComponent<Animator>();
         playerAnim.SetBool("waiting", true);
     }
 
     void FixedUpdate() // Update is called once per frame
-    { 
+    {
         MovePlayer();
         LifeReachedZero();
         gameManagerScript.UpdateHealth(health);
@@ -61,14 +61,14 @@ public class PlayerController : MonoBehaviour
                 playerAnim.SetBool("walkB", true);
                 movespeed = 7.0f;
             }
-            else  
+            else
             {
                 playerAnim.SetBool("walkB", false);
                 movespeed = 9.0f;
             }
 
             if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w"))
-            { playerAnim.SetBool("runF", true);}
+            { playerAnim.SetBool("runF", true); }
             else { playerAnim.SetBool("runF", false); }
 
             if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey("a"))
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
             { playerAnim.SetBool("runR", true); }
             else { playerAnim.SetBool("runR", false); }
 
-            if (Input.GetKey(KeyCode.Mouse1) && (Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w")))  
+            if (Input.GetKey(KeyCode.Mouse1) && (Input.GetKey(KeyCode.UpArrow) || Input.GetKey("w")))
             {
                 movespeed = 7.0f;
                 playerAnim.SetBool("walkF", true);
@@ -91,16 +91,16 @@ public class PlayerController : MonoBehaviour
             }
 
             // if you press spacebar you jump with animation
-            if (Input.GetKeyDown(KeyCode.Space) && checkdoublejump == 0) 
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 playerRB.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-                checkdoublejump ++;
-                playerAnim.SetTrigger("jump_trig");
+                playerAnim.SetBool("Jump", true);
             }
+            else { playerAnim.SetBool("Jump", false); }
 
             // if you press f you punch e kick q slide with animation
             if (Input.GetKeyDown("q"))
-            {playerAnim.SetTrigger("slide_trig");}
+            { playerAnim.SetTrigger("slide_trig"); }
 
             //if uve met the kidnaper you can klick leftmouse to attack with sword
             if (!hasNotHappened)
@@ -113,17 +113,11 @@ public class PlayerController : MonoBehaviour
         if (dialogScript.IsWriting())
         {
             foreach (AnimatorControllerParameter parameter in playerAnim.parameters)
-            {playerAnim.SetBool(parameter.name, false);}
+            { playerAnim.SetBool(parameter.name, false); }
             playerAnim.SetBool("wait", true);
-            
+
         }
         else { playerAnim.SetBool("wait", false); }
-    } 
-
-    private void OnCollisionEnter(Collision collision) //on collishion with ground player can jump again
-    {
-        if (collision.gameObject.CompareTag("ground"))  
-        {checkdoublejump = 0;}
     }
 
     private void OnTriggerEnter(Collider other) //do diffrent action when player collide with objects 
@@ -134,29 +128,28 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
 
-        else if (other.gameObject.CompareTag("enemyWeapon") && !isGameOver) //when collide with enemy youll get hurt and live decreas if theyll reach 0 game over 
+        else if (other.gameObject.CompareTag("enemyWeapon") && !isGameOver && enemyAnim.GetBool("fight")) //when collide with enemy youll get hurt and live decreas if theyll reach 0 game over 
         {
-              decreaseNumHealth++;
-              if (decreaseNumHealth == 10)
-              {
-                  enemtScript.Wait();
-                  Randomsentence = UnityEngine.Random.Range(0, hurtsentence.Length);
-                  dialogScript.SaySentence(hurtsentence[Randomsentence]);
-                  health--;
-                  decreaseNumHealth = 0;
-              }
-          
+            Debug.Log("in");
+            decreaseNumHealth++;
+            if (decreaseNumHealth == 10)
+            {
+                Randomsentence = UnityEngine.Random.Range(0, hurtsentence.Length);
+                dialogScript.SaySentence(hurtsentence[Randomsentence]);
+                health--;
+                decreaseNumHealth = 0;
+            }
         }
 
         else if (other.gameObject.CompareTag("key") && !isGameOver) //when pickup key haskey = true
-        { 
+        {
             levelManagerScript.HasKey("yes");
             dialogScript.SaySentence(" great now i can open the gate!");
             Destroy(other.gameObject);
         }
 
-        else if (other.gameObject.CompareTag("NextLevel") && !isGameOver)//when you touch the nextlevelpoint youll transorm to the next level (if you have the key)
-        { levelManagerScript.NextLevel();}
+        else if (other.gameObject.CompareTag("NextLevel") && !isGameOver && !hasNotHappened)//when you touch the nextlevelpoint youll transorm to the next level (if you have the key) if you dont and met the kidnapper youll say a sentence
+        { levelManagerScript.NextLevel(); }
 
         else if (other.gameObject.CompareTag("kidnapertrig") && !isGameOver && hasNotHappened) //when you reach a certain point the kidnaper and the kidnaper dialog will be active 
         {
@@ -165,7 +158,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void LifeReachedZero ()
+    void LifeReachedZero()
     {
         if (health == 0)
         {

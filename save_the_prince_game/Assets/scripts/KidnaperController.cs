@@ -38,7 +38,7 @@ public class KidnaperController : MonoBehaviour
         if (distance <= MinDistFollow && !met) //when close, move torwords the player
         {
             walkTo = Player.transform;
-              KidnapperAnim.SetBool("walk", true);
+            KidnapperAnim.SetBool("walk", true);
             transform.LookAt(walkTo);
             transform.position += transform.forward * speed * Time.deltaTime;
             if (distance < 10){met = true;}
@@ -50,6 +50,7 @@ public class KidnaperController : MonoBehaviour
             { 
                 gameObject.SetActive(false);
                 MoonSword.SetActive(true);
+                met = false;
             }
         }
 

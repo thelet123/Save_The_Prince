@@ -818,7 +818,7 @@ GameObject:
   - component: {fileID: 4383266650687395260}
   - component: {fileID: 3930127821680312287}
   m_Layer: 0
-  m_Name: unitychan_dynamic 1
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7064,6 +7064,15 @@ PrefabInstance:
     - target: {fileID: 4393946019257510, guid: ec413a0fd2a940f4d9475a8299d85f9c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 130.18501
+      objectReference: {fileID: 0}
+    - target: {fileID: 4393946019257510, guid: ec413a0fd2a940f4d9475a8299d85f9c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2275899780031282952, guid: ec413a0fd2a940f4d9475a8299d85f9c,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec413a0fd2a940f4d9475a8299d85f9c, type: 3}
